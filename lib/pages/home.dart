@@ -22,6 +22,27 @@ class _HomeState extends State<Home> {
     ]);
   }
 
+  void _menuOpen() {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (BuildContext context) {
+      return Scaffold(
+          appBar: AppBar(title: Text("Меню")),
+          body: Row(
+            children: [
+              ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, "/", (route) => false);
+                  },
+                  child: Text("На главную")),
+              Padding(padding: EdgeInsets.only(left: 15)),
+              Text("Просто меню")
+            ],
+          ));
+    }));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,6 +50,7 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         title: Text('Список дел'),
         centerTitle: true,
+        actions: [IconButton(onPressed: _menuOpen, icon: Icon(Icons.menu))],
       ),
       body: ListView.builder(
           itemCount: todoList.length,
@@ -41,11 +63,12 @@ class _HomeState extends State<Home> {
                     icon: Icon(
                       Icons.delete_outline,
                       color: Colors.blue,
-                    ), onPressed: () {
-                    setState(() {
-                      todoList.removeAt(index);
-                    });
-                  },
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        todoList.removeAt(index);
+                      });
+                    },
                   ),
                   title: Text(todoList[index]),
                 ),
@@ -61,25 +84,29 @@ class _HomeState extends State<Home> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.blue,
         onPressed: () {
-          showDialog(context: context, builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text("Add new"),
-                content: TextField(
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Add new"),
+                  content: TextField(
                     onChanged: (String value) {
                       _todoUser = value;
                     },
-                ),
-                actions: [
-                  ElevatedButton(onPressed: () {
-                    setState(() {
-                      todoList.add(_todoUser);
-                    });
-                    _todoUser = "";
-                    Navigator.of(context).pop();
-                  }, child: Text("Add"))
-                ],
-              );
-          });
+                  ),
+                  actions: [
+                    ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            todoList.add(_todoUser);
+                          });
+                          _todoUser = "";
+                          Navigator.of(context).pop();
+                        },
+                        child: Text("Add"))
+                  ],
+                );
+              });
         },
         child: Icon(
           Icons.add,
